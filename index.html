@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days Since Last Slappyball Update</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+        }
+        #timer, #comparisons {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            font-size: 2em;
+            margin: 10px;
+        }
+        #comparisons {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="timer"></div>
+    <div id="comparisons"></div>
+
+    <script>
+        function calculateTimeSince() {
+            const lastUpdate = new Date("2024-01-30T07:39:00Z"); // 08:39 CET is 07:39 UTC
+            const now = new Date();
+            
+            let years = now.getFullYear() - lastUpdate.getFullYear();
+            let months = now.getMonth() - lastUpdate.getMonth();
+            let days = now.getDate() - lastUpdate.getDate();
+            let hours = now.getHours() - lastUpdate.getHours();
+            let minutes = now.getMinutes() - lastUpdate.getMinutes();
+            let seconds = now.getSeconds() - lastUpdate.getSeconds();
+            
+            if (seconds < 0) {
+                seconds += 60;
+                minutes--;
+            }
+            if (minutes < 0) {
+                minutes += 60;
+                hours--;
+            }
+            if (hours < 0) {
+                hours += 24;
+                days--;
+            }
+            if (days < 0) {
+                let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                days += prevMonth;
+                months--;
+            }
+            if (months < 0) {
+                months += 12;
+                years--;
+            }
+            
+            document.getElementById("timer").innerText = `Time Since Last Real Slappyball Update: ${years} Years, ${months} Months, ${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds`;
+            
+            let totalHours = (years * 8760) + (months * 730) + (days * 24) + hours;
+            let totalMinutes = totalHours * 60 + minutes;
+            let totalSeconds = totalMinutes * 60 + seconds;
+            
+            document.getElementById("comparisons").innerHTML = `
+                In this time, you could have:<br>
+                - Watched "The Lord of the Rings" trilogy about ${Math.floor(totalHours / 11)} times<br>
+                - Run a marathon around ${Math.floor(totalHours / 4)} times<br>
+                - Played a full-length game of Slappyball approximately ${Math.floor(totalMinutes / 10)} times<br>
+                - Flown around the world roughly ${Math.floor(totalHours / 45)} times
+            `;
+        }
+        
+        setInterval(calculateTimeSince, 1000);
+        calculateTimeSince();
+    </script>
+</body>
+</html>
