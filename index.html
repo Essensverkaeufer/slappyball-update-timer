@@ -39,34 +39,19 @@
             const lastUpdate = new Date("2024-01-30T07:39:00Z"); // 08:39 CET is 07:39 UTC
             const now = new Date();
             
-            let years = now.getFullYear() - lastUpdate.getFullYear();
-            let months = now.getMonth() - lastUpdate.getMonth();
-            let days = now.getDate() - lastUpdate.getDate();
-            let hours = now.getHours() - lastUpdate.getHours();
-            let minutes = now.getMinutes() - lastUpdate.getMinutes();
-            let seconds = now.getSeconds() - lastUpdate.getSeconds();
+            let diff = now - lastUpdate;
             
-            if (seconds < 0) {
-                seconds += 60;
-                minutes--;
-            }
-            if (minutes < 0) {
-                minutes += 60;
-                hours--;
-            }
-            if (hours < 0) {
-                hours += 24;
-                days--;
-            }
-            if (days < 0) {
-                let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-                days += prevMonth;
-                months--;
-            }
-            if (months < 0) {
-                months += 12;
-                years--;
-            }
+            let years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+            diff -= years * (1000 * 60 * 60 * 24 * 365.25);
+            let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44));
+            diff -= months * (1000 * 60 * 60 * 24 * 30.44);
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            diff -= days * (1000 * 60 * 60 * 24);
+            let hours = Math.floor(diff / (1000 * 60 * 60));
+            diff -= hours * (1000 * 60 * 60);
+            let minutes = Math.floor(diff / (1000 * 60));
+            diff -= minutes * (1000 * 60);
+            let seconds = Math.floor(diff / 1000);
             
             document.getElementById("timer").innerText = `Time Since Last Real Slappyball Update: ${years} Years, ${months} Months, ${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds`;
             
