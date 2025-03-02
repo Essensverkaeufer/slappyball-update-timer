@@ -6,70 +6,133 @@
     <title>Days Since Last Slappyball Update</title>
     <style>
         body {
+            background: linear-gradient(to bottom, #00008b, #add8e6);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            text-align: center;
         }
-        #timer, #comparisons {
-            background: rgba(0, 0, 0, 0.5);
+        .timer-container {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            font-size: 2em;
-            margin: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 600px;
         }
-        #comparisons {
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        p {
             font-size: 1.2em;
+            margin: 20px 0;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            font-size: 1.1em;
+        }
+        li {
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div id="timer"></div>
-    <div id="comparisons"></div>
-
+    <div class="timer-container">
+        <h1>Days Since Last Slappyball Update</h1>
+        <p>
+            <span id="years">0</span> years,
+            <span id="months">0</span> months,
+            <span id="days">0</span> days,
+            <span id="hours">0</span> hours,
+            <span id="minutes">0</span> minutes,
+            <span id="seconds">0</span> seconds
+        </p>
+        <h2>During this time, you could have:</h2>
+        <ul>
+            <li>Watched "The Lord of the Rings" trilogy <span id="lotr">0</span> times</li>
+            <li>Run <span id="marathons">0</span> marathons</li>
+            <li>Played <span id="slappyball">0</span> full-length Slappyball matches</li>
+            <li>Flown around the world <span id="flights">0</span> times</li>
+        </ul>
+    </div>
     <script>
-        function calculateTimeSince() {
-            const lastUpdate = new Date("2024-01-30T07:39:00Z"); // 08:39 CET is 07:39 UTC
-            const now = new Date();
-            
-            let diff = now - lastUpdate;
-            
-            let years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-            diff -= years * (1000 * 60 * 60 * 24 * 365.25);
-            let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44));
-            diff -= months * (1000 * 60 * 60 * 24 * 30.44);
-            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            diff -= days * (1000 * 60 * 60 * 24);
-            let hours = Math.floor(diff / (1000 * 60 * 60));
-            diff -= hours * (1000 * 60 * 60);
-            let minutes = Math.floor(diff / (1000 * 60));
-            diff -= minutes * (1000 * 60);
-            let seconds = Math.floor(diff / 1000);
-            
-            document.getElementById("timer").innerText = `Time Since Last Real Slappyball Update: ${years} Years, ${months} Months, ${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds`;
-            
-            let totalHours = (years * 8760) + (months * 730) + (days * 24) + hours;
-            let totalMinutes = totalHours * 60 + minutes;
-            let totalSeconds = totalMinutes * 60 + seconds;
-            
-            document.getElementById("comparisons").innerHTML = `
-                In this time, you could have:<br>
-                - Watched "The Lord of the Rings" trilogy about ${Math.floor(totalHours / 11)} times<br>
-                - Run a marathon around ${Math.floor(totalHours / 4)} times<br>
-                - Played a full-length game of Slappyball approximately ${Math.floor(totalMinutes / 10)} times<br>
-                - Flown around the world roughly ${Math.floor(totalHours / 45)} times
-            `;
+        // Event time: January 30, 2024, 08:39 CET = 07:39 UTC
+        const eventTime = new Date(Date.UTC(2024, 0, 30, 7, 39, 0));
+
+        // Function to calculate the time difference
+        function calculateDifference(start, end) {
+            let temp = new Date(start.getTime());
+            let years = 0;
+            while (true) {
+                let next = new Date(temp.getTime());
+                next.setUTCFullYear(next.getUTCFullYear() + 1);
+                if (next > end) break;
+                years++;
+                temp.setUTCFullYear(temp.getUTCFullYear() + 1);
+            }
+            let months = 0;
+            while (true) {
+                let next = new Date(temp.getTime());
+                next.setUTCMonth(next.getUTCMonth() + 1);
+                if (next > end) break;
+                months++;
+                temp.setUTCMonth(temp.getUTCMonth() + 1);
+            }
+            let days = 0;
+            while (true) {
+                let next = new Date(temp.getTime());
+                next.setUTCDate(next.getUTCDate() + 1);
+                if (next > end) break;
+                days++;
+                temp.setUTCDate(temp.getUTCDate() + 1);
+            }
+            let remainingMs = end - temp;
+            let hours = Math.floor(remainingMs / (1000 * 60 * 60));
+            remainingMs %= (1000 * 60 * 60);
+            let minutes = Math.floor(remainingMs / (1000 * 60));
+            remainingMs %= (1000 * 60);
+            let seconds = Math.floor(remainingMs / 1000);
+            return { years, months, days, hours, minutes, seconds };
         }
-        
-        setInterval(calculateTimeSince, 1000);
-        calculateTimeSince();
+
+        // Update function to refresh the timer and comparisons
+        function update() {
+            const now = new Date();
+            const diff = calculateDifference(eventTime, now);
+
+            // Update time difference display
+            document.getElementById('years').textContent = diff.years;
+            document.getElementById('months').textContent = diff.months;
+            document.getElementById('days').textContent = diff.days;
+            document.getElementById('hours').textContent = diff.hours;
+            document.getElementById('minutes').textContent = diff.minutes;
+            document.getElementById('seconds').textContent = diff.seconds;
+
+            // Calculate total elapsed time for comparisons
+            const totalMs = now - eventTime;
+            const totalHours = totalMs / (1000 * 60 * 60);
+            const totalMinutes = totalMs / (1000 * 60);
+
+            // Update comparison section
+            document.getElementById('lotr').textContent = Math.floor(totalHours / 11); // 11 hours
+            document.getElementById('marathons').textContent = Math.floor(totalHours / 4); // 4 hours
+            document.getElementById('slappyball').textContent = Math.floor(totalMinutes / 10); // 10 minutes
+            document.getElementById('flights').textContent = Math.floor(totalHours / 45); // 45 hours
+        }
+
+        // Initial call and set interval to update every second
+        update();
+        setInterval(update, 1000);
     </script>
 </body>
 </html>
